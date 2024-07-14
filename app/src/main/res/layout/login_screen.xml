@@ -58,16 +58,18 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@id/tvSignUp"
+        app:layout_constraintBottom_toTopOf="@id/btnSignUp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/tvSignUp"
+    <Button
+        android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Don't have an account? Sign Up"
+        android:textAllCaps="false"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

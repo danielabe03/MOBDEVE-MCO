@@ -1,18 +1,18 @@
 package com.mobdeve.s12.abe.daniel.mco3
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.Button
-import android.widget.TextView
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var emailInputLayout: TextInputLayout
     private lateinit var passwordInputLayout: TextInputLayout
     private lateinit var loginButton: Button
-    private lateinit var signUpTextView: TextView
+    private lateinit var signUpButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +22,11 @@ class LoginActivity : AppCompatActivity() {
         emailInputLayout = findViewById(R.id.tilEmail)
         passwordInputLayout = findViewById(R.id.tilPassword)
         loginButton = findViewById(R.id.btnLogin)
-        signUpTextView = findViewById(R.id.tvSignUp)
+        signUpButton = findViewById(R.id.btnSignUp)
 
         // Set up click listeners
         loginButton.setOnClickListener { attemptLogin() }
-        signUpTextView.setOnClickListener { navigateToSignUp() }
+        signUpButton.setOnClickListener { navigateToSignUp() }
     }
 
     private fun attemptLogin() {
@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToSignUp() {
-        // TODO: Implement navigation to sign up screen
-        Toast.makeText(this, "Navigate to Sign Up", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
     }
 }
