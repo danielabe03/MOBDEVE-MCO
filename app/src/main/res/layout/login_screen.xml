@@ -9,13 +9,13 @@
         android:id="@+id/tvAppLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="APP LOGO"
+        android:layout_marginTop="28dp"
+        android:text="SHOWHUB"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilEmail"
@@ -56,12 +56,13 @@
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Login"
         android:textAllCaps="false"
+        android:textColorLink="#1976D1"
         app:layout_constraintBottom_toTopOf="@id/btnSignUp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnSignUp"
