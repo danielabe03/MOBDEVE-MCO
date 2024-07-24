@@ -21,39 +21,51 @@
         android:id="@+id/btnWatching"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Watching"
-        app:layout_constraintTop_toBottomOf="@+id/manageListText"
+        app:layout_constraintEnd_toStartOf="@+id/btnWatched"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/manageListText" />
 
     <Button
         android:id="@+id/btnWatched"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Watched"
-        app:layout_constraintTop_toBottomOf="@+id/btnWatching"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toStartOf="@+id/btnPlanToWatch"
+        app:layout_constraintStart_toEndOf="@+id/btnWatching"
+        app:layout_constraintTop_toBottomOf="@+id/manageListText" />
 
     <Button
         android:id="@+id/btnPlanToWatch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Plan to Watch"
-        app:layout_constraintTop_toBottomOf="@+id/btnWatched"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toEndOf="@+id/btnWatched"
+        app:layout_constraintTop_toBottomOf="@+id/manageListText" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewManageList"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/btnPlanToWatch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:menu="@menu/nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

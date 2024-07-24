@@ -77,7 +77,6 @@
         android:layout_marginBottom="16dp"
         android:text="Sign Up"
         android:textAllCaps="false"
-        android:textColorLink="#1976D1"
         app:layout_constraintBottom_toTopOf="@id/tvLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
