@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -24,7 +25,7 @@
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hometext" />
+        app:layout_constraintTop_toBottomOf="@id/hometext" />
 
     <Button
         android:id="@+id/btnManageList"
@@ -32,9 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Manage List"
-        app:layout_constraintEnd_toStartOf="@+id/btnFilterShows"
+        app:layout_constraintEnd_toStartOf="@id/btnFilterShows"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <Button
         android:id="@+id/btnFilterShows"
@@ -43,8 +44,8 @@
         android:layout_marginTop="24dp"
         android:text="Filter Shows"
         app:layout_constraintEnd_toStartOf="@+id/btnCustomLists"
-        app:layout_constraintStart_toEndOf="@+id/btnManageList"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintStart_toEndOf="@id/btnManageList"
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <Button
         android:id="@+id/btnCustomLists"
@@ -54,7 +55,7 @@
         android:text="Custom Lists"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnFilterShows"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewShows"
