@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.mobdeve.s12.abe.daniel.mco3">
 
     <application
         android:allowBackup="true"
@@ -29,6 +30,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-    </application>
 
+        <activity
+            android:name=".SearchActivity"
+            android:exported="true" />
+    </application>
 </manifest>

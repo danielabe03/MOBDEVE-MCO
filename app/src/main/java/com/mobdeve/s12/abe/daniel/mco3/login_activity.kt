@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.Button
+import com.mobdeve.s12.abe.daniel.mco3.database.DatabaseHelper
 
 class LoginActivity : AppCompatActivity() {
 
@@ -13,10 +14,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordInputLayout: TextInputLayout
     private lateinit var loginButton: Button
     private lateinit var signUpButton: Button
+    private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_screen)
+
+        dbHelper = DatabaseHelper(this)
 
         // Initialize views
         emailInputLayout = findViewById(R.id.tilEmail)
@@ -48,13 +52,23 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        // TODO: Implement actual login logic here
-        // For now, we'll just show a toast message
-        Toast.makeText(this, "Login attempt with: $email", Toast.LENGTH_SHORT).show()
+        val cursor = dbHelper.getUser(email, password)
+        if (cursor != null && cursor.moveToFirst()) {
+            Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+            navigateToHome()
+        } else {
+            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun navigateToSignUp() {
         val intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun navigateToHome() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()  // Finish this activity so the user can't navigate back to it
     }
 }
