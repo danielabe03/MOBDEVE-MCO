@@ -37,12 +37,11 @@
             android:exported="true" />
 
         <activity
-            android:name=".ShowDetailsActivity"
-            android:exported="true" />
-
-        <activity
             android:name=".RateReviewActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".ShowDetailsActivity"
+            android:exported="true" />
     </application>
 </manifest>

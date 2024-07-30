@@ -15,12 +15,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var signUpButton: Button
     private lateinit var dbHelper: DatabaseHelper
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_screen)
 
         dbHelper = DatabaseHelper(this)
+        sessionManager = SessionManager(this)
 
         // Initialize views
         emailInputLayout = findViewById(R.id.tilEmail)
@@ -54,6 +56,8 @@ class LoginActivity : AppCompatActivity() {
 
         val cursor = dbHelper.getUser(email, password)
         if (cursor != null && cursor.moveToFirst()) {
+            val userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+            sessionManager.saveUserSession(userId)
             Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
             navigateToHome()
         } else {
