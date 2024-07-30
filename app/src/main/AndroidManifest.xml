@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mobdeve.s12.abe.daniel.mco3">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -34,5 +35,14 @@
         <activity
             android:name=".SearchActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".ShowDetailsActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".RateReviewActivity"
+            android:exported="true" />
+
     </application>
 </manifest>

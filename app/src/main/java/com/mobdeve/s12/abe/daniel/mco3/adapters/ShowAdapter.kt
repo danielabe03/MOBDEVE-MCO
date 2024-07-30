@@ -34,7 +34,7 @@ class ShowAdapter(
         holder.showName.text = show.name
         holder.showStatus.text = "Status: ${show.status}"
         holder.ratingBar.rating = show.rating
-        holder.comments.text = show.comments ?: "No comments"
+        holder.comments.text = show.comment ?: "No comments"
         holder.deleteButton.setOnClickListener {
             onDeleteClick(show)
         }

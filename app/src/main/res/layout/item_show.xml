@@ -10,47 +10,51 @@
         android:id="@+id/tvShowName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Show Name"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnDelete" />
-
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:text="Show Name" />
 
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Status: Watching"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvShowName"
-        app:layout_constraintEnd_toStartOf="@+id/ratingBar" />
+        app:layout_constraintTop_toBottomOf="@id/tvShowName"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Status: Watching" />
 
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:numStars="5"
-        android:stepSize="0.5"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDelete" />
+        android:numStars="5"
+        android:stepSize="1.0" />
 
     <TextView
         android:id="@+id/tvComments"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Comments: None"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStatus"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="No comments" />
 
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Delete"
+        app:layout_constraintTop_toBottomOf="@id/tvComments"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
