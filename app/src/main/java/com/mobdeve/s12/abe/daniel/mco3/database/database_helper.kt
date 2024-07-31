@@ -5,16 +5,19 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
+import com.mobdeve.s12.abe.daniel.mco3.models.CustomList
+import com.mobdeve.s12.abe.daniel.mco3.models.Show
 
-class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 2  // Incremented the version
+        private const val DATABASE_VERSION = 2
         private const val DATABASE_NAME = "UserDatabase.db"
+
         private const val TABLE_USERS = "Users"
         private const val TABLE_REVIEWS = "Reviews"
+        private const val TABLE_CUSTOM_LISTS = "CustomLists"
+        private const val TABLE_SHOWS = "Shows"
 
         private const val COLUMN_ID = "id"
         private const val COLUMN_EMAIL = "email"
@@ -29,37 +32,51 @@ class DatabaseHelper(context: Context) :
         private const val COLUMN_RATING = "rating"
         private const val COLUMN_COMMENT = "comment"
         private const val COLUMN_STATUS = "status"
+        private const val COLUMN_CUSTOM_LIST_ID = "custom_list_id"
+        private const val COLUMN_NAME = "name"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createUserTable = ("CREATE TABLE " + TABLE_USERS + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_EMAIL + " TEXT,"
-                + COLUMN_PASSWORD + " TEXT" + ")")
+        val createUserTable = ("CREATE TABLE $TABLE_USERS ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_EMAIL TEXT,"
+                + "$COLUMN_PASSWORD TEXT)")
+
+        val createReviewTable = ("CREATE TABLE $TABLE_REVIEWS ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_USER_ID INTEGER,"
+                + "$COLUMN_SHOW_ID INTEGER,"
+                + "$COLUMN_SHOW_NAME TEXT,"
+                + "$COLUMN_GENRES TEXT,"
+                + "$COLUMN_SUMMARY TEXT,"
+                + "$COLUMN_IMAGE_URL TEXT,"
+                + "$COLUMN_RATING REAL,"
+                + "$COLUMN_COMMENT TEXT,"
+                + "$COLUMN_STATUS TEXT)")
+
+        val createCustomListsTable = ("CREATE TABLE $TABLE_CUSTOM_LISTS ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_NAME TEXT)")
+
+        val createShowsTable = ("CREATE TABLE $TABLE_SHOWS ("
+                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_SHOW_NAME TEXT,"
+                + "$COLUMN_STATUS TEXT,"
+                + "$COLUMN_RATING REAL,"
+                + "$COLUMN_COMMENT TEXT,"
+                + "$COLUMN_CUSTOM_LIST_ID INTEGER,"
+                + "FOREIGN KEY($COLUMN_CUSTOM_LIST_ID) REFERENCES $TABLE_CUSTOM_LISTS($COLUMN_ID))")
+
         db.execSQL(createUserTable)
-
-        val createReviewTable = ("CREATE TABLE " + TABLE_REVIEWS + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_USER_ID + " INTEGER,"
-                + COLUMN_SHOW_ID + " INTEGER,"
-                + COLUMN_SHOW_NAME + " TEXT,"
-                + COLUMN_GENRES + " TEXT,"
-                + COLUMN_SUMMARY + " TEXT,"
-                + COLUMN_IMAGE_URL + " TEXT,"
-                + COLUMN_RATING + " REAL,"
-                + COLUMN_COMMENT + " TEXT,"
-                + COLUMN_STATUS + " TEXT" + ")")
         db.execSQL(createReviewTable)
-
-        Log.d("DatabaseHelper", "Database tables created.")
+        db.execSQL(createCustomListsTable)
+        db.execSQL(createShowsTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-            db.execSQL("DROP TABLE IF EXISTS $TABLE_REVIEWS")
-            onCreate(db)
-            Log.d("DatabaseHelper", "Database upgraded from version $oldVersion to $newVersion.")
+        if (oldVersion < 2) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_CUSTOM_LISTS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_NAME TEXT)")
+            db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SHOWS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_SHOW_NAME TEXT, $COLUMN_STATUS TEXT, $COLUMN_RATING REAL, $COLUMN_COMMENT TEXT, $COLUMN_CUSTOM_LIST_ID INTEGER, FOREIGN KEY($COLUMN_CUSTOM_LIST_ID) REFERENCES $TABLE_CUSTOM_LISTS($COLUMN_ID))")
         }
     }
 
@@ -152,4 +169,115 @@ class DatabaseHelper(context: Context) :
         return result
     }
 
+    // Custom Lists methods
+    fun addCustomList(name: String): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, name)
+        }
+        val result = db.insert(TABLE_CUSTOM_LISTS, null, values)
+        db.close()
+        return result
+    }
+
+    fun getCustomLists(): List<CustomList> {
+        val db = this.readableDatabase
+        val cursor = db.query(TABLE_CUSTOM_LISTS, null, null, null, null, null, null)
+        val customLists = mutableListOf<CustomList>()
+        while (cursor.moveToNext()) {
+            val customList = CustomList(
+                cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+            )
+            customLists.add(customList)
+        }
+        cursor.close()
+        return customLists
+    }
+
+    fun getShowsInCustomList(customListId: Int): List<Show> {
+        val db = this.readableDatabase
+        val cursor = db.query(TABLE_SHOWS, null, "$COLUMN_CUSTOM_LIST_ID=?", arrayOf(customListId.toString()), null, null, null)
+        val shows = mutableListOf<Show>()
+        while (cursor.moveToNext()) {
+            val show = Show(
+                cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SHOW_NAME)) ?: "",
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS)) ?: "",
+                cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_RATING)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMMENT))
+            )
+            shows.add(show)
+        }
+        cursor.close()
+        return shows
+    }
+
+    fun deleteShowFromCustomList(customListId: Int, showId: Int): Int {
+        val db = this.writableDatabase
+        val result = db.delete(TABLE_SHOWS, "$COLUMN_ID=? AND $COLUMN_CUSTOM_LIST_ID=?", arrayOf(showId.toString(), customListId.toString()))
+        db.close()
+        return result
+    }
+
+    fun addShowToCustomList(customListId: Int, showName: String, rating: Float): Long {
+        val db = this.writableDatabase
+
+        // Check if the show already exists in the custom list
+        val cursor = db.query(
+            TABLE_SHOWS,
+            null,
+            "$COLUMN_CUSTOM_LIST_ID=? AND $COLUMN_SHOW_NAME=?",
+            arrayOf(customListId.toString(), showName),
+            null, null, null
+        )
+
+        return if (cursor.moveToFirst()) {
+            // If the show already exists, update its rating and other information
+            val values = ContentValues().apply {
+                put(COLUMN_RATING, rating)
+            }
+            val result = db.update(
+                TABLE_SHOWS,
+                values,
+                "$COLUMN_CUSTOM_LIST_ID=? AND $COLUMN_SHOW_NAME=?",
+                arrayOf(customListId.toString(), showName)
+            )
+            cursor.close()
+            result.toLong()
+        } else {
+            // If the show does not exist, check if it exists in reviews to sync the information
+            val reviewCursor = db.query(
+                TABLE_REVIEWS,
+                null,
+                "$COLUMN_SHOW_NAME=?",
+                arrayOf(showName),
+                null, null, null
+            )
+
+            val values = ContentValues().apply {
+                put(COLUMN_SHOW_NAME, showName)
+                put(COLUMN_RATING, rating)
+                put(COLUMN_CUSTOM_LIST_ID, customListId)
+                if (reviewCursor.moveToFirst()) {
+                    put(COLUMN_STATUS, reviewCursor.getString(reviewCursor.getColumnIndexOrThrow(COLUMN_STATUS)))
+                    put(COLUMN_COMMENT, reviewCursor.getString(reviewCursor.getColumnIndexOrThrow(COLUMN_COMMENT)))
+                    put(COLUMN_RATING, reviewCursor.getFloat(reviewCursor.getColumnIndexOrThrow(COLUMN_RATING))) // Sync rating
+                }
+            }
+            reviewCursor.close()
+            cursor.close()
+            val result = db.insert(TABLE_SHOWS, null, values)
+            db.close()
+            result
+        }
+    }
+
+    fun deleteCustomList(customListId: Int): Int {
+        val db = this.writableDatabase
+        val result = db.delete(TABLE_CUSTOM_LISTS, "$COLUMN_ID=?", arrayOf(customListId.toString()))
+        db.delete(TABLE_SHOWS, "$COLUMN_CUSTOM_LIST_ID=?", arrayOf(customListId.toString()))  // Delete associated shows
+        db.close()
+        return result
+    }
 }

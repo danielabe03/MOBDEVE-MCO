@@ -43,5 +43,27 @@
         <activity
             android:name=".ShowDetailsActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".CustomListsActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".CreateCustomListActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".CustomListDetailActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".AddShowToCustomListActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".SearchAndAddShowActivity"
+            android:exported="true" />
+
+
     </application>
 </manifest>

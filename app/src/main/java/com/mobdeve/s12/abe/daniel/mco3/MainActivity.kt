@@ -1,29 +1,32 @@
 package com.mobdeve.s12.abe.daniel.mco3
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.RadioGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mobdeve.s12.abe.daniel.mco3.adapters.ShowAdapter
-import com.mobdeve.s12.abe.daniel.mco3.models.Show
 import com.mobdeve.s12.abe.daniel.mco3.database.DatabaseHelper
-import android.app.AlertDialog
-import android.view.LayoutInflater
-import android.widget.RadioGroup
+import com.mobdeve.s12.abe.daniel.mco3.models.Show
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var showAdapter: ShowAdapter
     private val shows = mutableListOf<Show>()
+    private val allShows = mutableListOf<Show>() // To keep the original list
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var sessionManager: SessionManager
 
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             // Handle delete action
             Toast.makeText(this, "${show.name} deleted", Toast.LENGTH_SHORT).show()
             shows.remove(show)
+            allShows.remove(show)
             showAdapter.notifyDataSetChanged()
             dbHelper.deleteShow(sessionManager.getUserSession(), show.id)
         }
@@ -71,6 +75,31 @@ class MainActivity : AppCompatActivity() {
             showFilterDialog()
         }
 
+        val btnCustomLists: Button = findViewById(R.id.btnCustomLists)
+        btnCustomLists.setOnClickListener {
+            val intent = Intent(this, CustomListsActivity::class.java)
+            startActivity(intent)
+        }
+
+        val searchView: SearchView = findViewById(R.id.searchView)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    searchShows(query)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null && newText.isNotEmpty()) {
+                    searchShows(newText)
+                } else {
+                    reloadAllShows() // Reload all shows when search bar is empty
+                }
+                return false
+            }
+        })
+
         // Load initial data
         loadReviews()
     }
@@ -95,6 +124,8 @@ class MainActivity : AppCompatActivity() {
     private fun loadReviews() {
         val userId = sessionManager.getUserSession()
         if (userId != -1) {
+            shows.clear()
+            allShows.clear() // Clear the allShows list
             val reviews = dbHelper.getReviews(userId)
             for (review in reviews) {
                 val show = Show(
@@ -105,9 +136,21 @@ class MainActivity : AppCompatActivity() {
                     review.getAsString("comment")
                 )
                 shows.add(show)
+                allShows.add(show) // Add to the allShows list
             }
             showAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun searchShows(query: String) {
+        val filteredShows = allShows.filter {
+            it.name.contains(query, ignoreCase = true)
+        }
+        showAdapter.updateShows(filteredShows)
+    }
+
+    private fun reloadAllShows() {
+        showAdapter.updateShows(allShows)
     }
 
     private fun showFilterDialog() {

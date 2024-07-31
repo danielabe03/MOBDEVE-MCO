@@ -11,34 +11,45 @@ import com.mobdeve.s12.abe.daniel.mco3.R
 import com.mobdeve.s12.abe.daniel.mco3.models.Show
 
 class ShowAdapter(
-    private val shows: List<Show>,
-    private val onDeleteClick: (Show) -> Unit
+    private var shows: List<Show>,
+    private val deleteShowCallback: (Show) -> Unit
 ) : RecyclerView.Adapter<ShowAdapter.ShowViewHolder>() {
 
-    class ShowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val showName: TextView = itemView.findViewById(R.id.tvShowName)
-        val showStatus: TextView = itemView.findViewById(R.id.tvStatus)
-        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-        val comments: TextView = itemView.findViewById(R.id.tvComments)
-        val deleteButton: Button = itemView.findViewById(R.id.btnDelete)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_show, parent, false)
-        return ShowViewHolder(itemView)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_show, parent, false)
+        return ShowViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
         val show = shows[position]
-        holder.showName.text = show.name
-        holder.showStatus.text = "Status: ${show.status}"
-        holder.ratingBar.rating = show.rating
-        holder.comments.text = show.comment ?: "No comments"
-        holder.deleteButton.setOnClickListener {
-            onDeleteClick(show)
-        }
+        holder.bind(show, deleteShowCallback)
     }
 
-    override fun getItemCount(): Int = shows.size
+    override fun getItemCount(): Int {
+        return shows.size
+    }
+
+    fun updateShows(newShows: List<Show>) {
+        shows = newShows
+        notifyDataSetChanged()
+    }
+
+    class ShowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvShowName: TextView = itemView.findViewById(R.id.tvShowName)
+        private val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
+        private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+        private val tvComments: TextView = itemView.findViewById(R.id.tvComments)
+        private val btnDelete: Button = itemView.findViewById(R.id.btnDelete)
+
+        fun bind(show: Show, deleteShowCallback: (Show) -> Unit) {
+            tvShowName.text = show.name
+            tvStatus.text = "Status: ${show.status}"
+            ratingBar.rating = show.rating
+            tvComments.text = show.comment ?: "No comment"
+
+            btnDelete.setOnClickListener {
+                deleteShowCallback(show)
+            }
+        }
+    }
 }
