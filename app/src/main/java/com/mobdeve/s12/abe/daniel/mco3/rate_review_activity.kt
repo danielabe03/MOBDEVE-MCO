@@ -9,14 +9,13 @@ import android.widget.RatingBar
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.textfield.TextInputLayout
 import com.mobdeve.s12.abe.daniel.mco3.database.DatabaseHelper
 
 class RateReviewActivity : AppCompatActivity() {
 
     private lateinit var ratingBar: RatingBar
-    private lateinit var reviewInput: TextInputLayout
+    private lateinit var commentInput: TextInputLayout
     private lateinit var btnSubmitReview: Button
     private lateinit var statusDropdown: Spinner
     private lateinit var dbHelper: DatabaseHelper
@@ -30,7 +29,7 @@ class RateReviewActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
 
         ratingBar = findViewById(R.id.ratingBar)
-        reviewInput = findViewById(R.id.tilReview)
+        commentInput = findViewById(R.id.tilReview)
         btnSubmitReview = findViewById(R.id.btnSubmitReview)
         statusDropdown = findViewById(R.id.statusDropdown)
 
@@ -52,7 +51,7 @@ class RateReviewActivity : AppCompatActivity() {
 
         btnSubmitReview.setOnClickListener {
             val rating = ratingBar.rating
-            val comment = reviewInput.editText?.text.toString()
+            val comment = commentInput.editText?.text.toString()
             val status = statusDropdown.selectedItem.toString()
 
             val userId = sessionManager.getUserSession()
@@ -67,21 +66,6 @@ class RateReviewActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
                 navigateToLogin()
-            }
-        }
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    navigateToHome()
-                    true
-                }
-                R.id.navigation_search -> {
-                    startActivity(Intent(this, SearchActivity::class.java))
-                    true
-                }
-                else -> false
             }
         }
     }

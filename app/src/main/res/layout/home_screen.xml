@@ -26,23 +26,13 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <Button
-        android:id="@+id/btnManageList"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Manage List"
-        app:layout_constraintEnd_toStartOf="@id/btnFilterShows"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchView" />
-
-    <Button
         android:id="@+id/btnFilterShows"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Filter Shows"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnCustomLists"
-        app:layout_constraintStart_toEndOf="@id/btnManageList"
         app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <Button
@@ -51,8 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Custom Lists"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnFilterShows"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <androidx.recyclerview.widget.RecyclerView

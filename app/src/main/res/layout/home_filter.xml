@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter by Status"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/textViewStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp">
+
+        <RadioButton
+            android:id="@+id/radioAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All" />
+
+        <RadioButton
+            android:id="@+id/radioWatching"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Watching" />
+
+        <RadioButton
+            android:id="@+id/radioFinished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finished" />
+
+        <RadioButton
+            android:id="@+id/radioPlanning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Planning" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textViewRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter by Rating"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/radioGroupStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/textViewRating"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp">
+
+        <RadioButton
+            android:id="@+id/radioRatingAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All" />
+
+        <RadioButton
+            android:id="@+id/radioRating4AndAbove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4 and above" />
+
+        <RadioButton
+            android:id="@+id/radioRating3AndAbove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 and above" />
+
+        <RadioButton
+            android:id="@+id/radioRating2AndAbove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 and above" />
+
+        <RadioButton
+            android:id="@+id/radioRating1AndAbove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 and above" />
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

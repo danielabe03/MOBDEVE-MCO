@@ -144,4 +144,12 @@ class DatabaseHelper(context: Context) :
         cursor.close()
         return reviews
     }
+
+    fun deleteShow(userId: Int, showId: Int): Int {
+        val db = this.writableDatabase
+        val result = db.delete(TABLE_REVIEWS, "$COLUMN_USER_ID=? AND $COLUMN_SHOW_ID=?", arrayOf(userId.toString(), showId.toString()))
+        db.close()
+        return result
+    }
+
 }

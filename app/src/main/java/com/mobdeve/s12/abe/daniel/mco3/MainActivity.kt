@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +16,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mobdeve.s12.abe.daniel.mco3.adapters.ShowAdapter
 import com.mobdeve.s12.abe.daniel.mco3.models.Show
 import com.mobdeve.s12.abe.daniel.mco3.database.DatabaseHelper
+import android.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.RadioGroup
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -31,8 +34,7 @@ class MainActivity : AppCompatActivity() {
         dbHelper = DatabaseHelper(this)
         sessionManager = SessionManager(this)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         recyclerView = findViewById(R.id.recyclerViewShows)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "${show.name} deleted", Toast.LENGTH_SHORT).show()
             shows.remove(show)
             showAdapter.notifyDataSetChanged()
+            dbHelper.deleteShow(sessionManager.getUserSession(), show.id)
         }
         recyclerView.adapter = showAdapter
 
@@ -63,6 +66,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val btnFilterShows: Button = findViewById(R.id.btnFilterShows)
+        btnFilterShows.setOnClickListener {
+            showFilterDialog()
+        }
+
         // Load initial data
         loadReviews()
     }
@@ -75,10 +83,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_logout -> {
-                // Clear the user session and navigate to the login screen
                 sessionManager.clearUserSession()
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(this, LoginActivity::class.java))
                 finish()
                 true
             }
@@ -96,9 +102,62 @@ class MainActivity : AppCompatActivity() {
                     review.getAsString("show_name"),
                     review.getAsString("status"),
                     review.getAsFloat("rating"),
-                    review.getAsString("review")
+                    review.getAsString("comment")
                 )
                 shows.add(show)
+            }
+            showAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun showFilterDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.home_filter, null)
+        val radioGroupStatus = dialogView.findViewById<RadioGroup>(R.id.radioGroupStatus)
+        val radioGroupRating = dialogView.findViewById<RadioGroup>(R.id.radioGroupRating)
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        builder.setTitle("Filter Shows")
+        builder.setPositiveButton("Apply") { _, _ ->
+            val selectedStatusId = radioGroupStatus.checkedRadioButtonId
+            val selectedStatus = when (selectedStatusId) {
+                R.id.radioWatching -> "Watching"
+                R.id.radioFinished -> "Finished"
+                R.id.radioPlanning -> "Planning"
+                else -> "All"
+            }
+
+            val selectedRatingId = radioGroupRating.checkedRadioButtonId
+            val minRating = when (selectedRatingId) {
+                R.id.radioRating4AndAbove -> 4.0f
+                R.id.radioRating3AndAbove -> 3.0f
+                R.id.radioRating2AndAbove -> 2.0f
+                R.id.radioRating1AndAbove -> 1.0f
+                else -> 0.0f
+            }
+
+            applyFilters(selectedStatus, minRating)
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.create().show()
+    }
+
+    private fun applyFilters(status: String, minRating: Float) {
+        val userId = sessionManager.getUserSession()
+        if (userId != -1) {
+            shows.clear()
+            val reviews = dbHelper.getReviews(userId)
+            for (review in reviews) {
+                val show = Show(
+                    review.getAsInteger("show_id"),
+                    review.getAsString("show_name"),
+                    review.getAsString("status"),
+                    review.getAsFloat("rating"),
+                    review.getAsString("comment")
+                )
+                if ((status == "All" || show.status == status) && show.rating >= minRating) {
+                    shows.add(show)
+                }
             }
             showAdapter.notifyDataSetChanged()
         }
