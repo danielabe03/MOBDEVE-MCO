@@ -1,6 +1,6 @@
 package com.mobdeve.s12.abe.daniel.mco3
 
-import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -10,24 +10,24 @@ import com.mobdeve.s12.abe.daniel.mco3.database.DatabaseHelper
 class CreateCustomListActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: DatabaseHelper
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.create_custom_list)
 
         dbHelper = DatabaseHelper(this)
+        sessionManager = SessionManager(this)
 
-        val etListName: EditText = findViewById(R.id.editTextListName)
+        val editTextListName: EditText = findViewById(R.id.editTextListName)
         val btnCreateList: Button = findViewById(R.id.btnCreateList)
 
         btnCreateList.setOnClickListener {
-            val listName = etListName.text.toString()
-
+            val listName = editTextListName.text.toString()
             if (listName.isNotEmpty()) {
-                dbHelper.addCustomList(listName)
-                val intent = Intent(this, CustomListsActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
+                val userId = sessionManager.getUserSession()
+                dbHelper.addCustomList(userId, listName)
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         }

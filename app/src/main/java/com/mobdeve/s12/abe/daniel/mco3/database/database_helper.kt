@@ -56,6 +56,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         val createCustomListsTable = ("CREATE TABLE $TABLE_CUSTOM_LISTS ("
                 + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "$COLUMN_USER_ID INTEGER,"
                 + "$COLUMN_NAME TEXT)")
 
         val createShowsTable = ("CREATE TABLE $TABLE_SHOWS ("
@@ -75,7 +76,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_CUSTOM_LISTS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_NAME TEXT)")
+            db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_CUSTOM_LISTS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_NAME TEXT)")
             db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SHOWS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_SHOW_NAME TEXT, $COLUMN_STATUS TEXT, $COLUMN_RATING REAL, $COLUMN_COMMENT TEXT, $COLUMN_CUSTOM_LIST_ID INTEGER, FOREIGN KEY($COLUMN_CUSTOM_LIST_ID) REFERENCES $TABLE_CUSTOM_LISTS($COLUMN_ID))")
         }
     }
@@ -170,19 +171,26 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Custom Lists methods
-    fun addCustomList(name: String): Long {
+    fun addCustomList(userId: Int, name: String): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_NAME, name)
+            put(COLUMN_USER_ID, userId)
         }
         val result = db.insert(TABLE_CUSTOM_LISTS, null, values)
         db.close()
         return result
     }
 
-    fun getCustomLists(): List<CustomList> {
+    fun getCustomLists(userId: Int): List<CustomList> {
         val db = this.readableDatabase
-        val cursor = db.query(TABLE_CUSTOM_LISTS, null, null, null, null, null, null)
+        val cursor = db.query(
+            TABLE_CUSTOM_LISTS,
+            null,
+            "$COLUMN_USER_ID=?",
+            arrayOf(userId.toString()),
+            null, null, null
+        )
         val customLists = mutableListOf<CustomList>()
         while (cursor.moveToNext()) {
             val customList = CustomList(
